@@ -1,4 +1,4 @@
-package com.y.commuction.controller;
+package com.y.community.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

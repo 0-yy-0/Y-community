@@ -23,6 +23,7 @@ public class PublishController {
     @Autowired
     private QuestionService questionService;
 
+    // 将对应问题回显，并将更新写入数据库
     @GetMapping("/publish/{id}")
     public String edit(@PathVariable(name = "id") Integer id,
                        Model model) {

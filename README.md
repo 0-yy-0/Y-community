@@ -46,3 +46,11 @@ create table USER
 
 
 ```
+1. 运行数据库脚本，创建本地数据库
+```sh
+mvn flyway:migrate
+```
+2. 生成 Model 等 MyBatis 配置文件的命令
+```
+mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
+```

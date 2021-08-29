@@ -6,8 +6,8 @@ import lombok.Data;
 
 @Data
 // 整合 user 和 question 两个mapper
-public class QuestionDTO {
-    private Long id;
+public class QuestionDTO extends Question {
+    private Integer id;
     private String title;
     private String description;
     private Long gmtCreate;

@@ -6,17 +6,17 @@ import lombok.Data;
 
 @Data
 // 整合 user 和 question 两个mapper
-public class QuestionDTO extends Question {
-    private Integer id;
+public class QuestionDTO {
+    private Long id;
     private String title;
     private String description;
+    private String tag;
     private Long gmtCreate;
     private Long gmtModified;
-    private Integer creator;
-    private Integer commentCount;
+    private Long creator;
     private Integer viewCount;
+    private Integer commentCount;
     private Integer likeCount;
-    private String tag;
     private User user;
-
+    private Integer sticky;
 }

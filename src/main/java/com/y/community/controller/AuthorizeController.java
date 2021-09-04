@@ -47,9 +47,7 @@ public class AuthorizeController {
         accessTokenDTO.setState(state);
 
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
-        System.out.println("==accessToken==" + accessToken);
         GithubUser githubUser = githubProvider.getUser(accessToken);
-        System.out.println("=user=" + githubUser);
         String name = githubUser.getName();
         if (name == null) {
 //            有可能账号未设置name，取login作为其name

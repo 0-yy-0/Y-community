@@ -5,10 +5,10 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
 // 页面展示数量的匹配
-public class PaginationDTO {
-    private List<QuestionDTO> questions;
+@Data
+public class PaginationDTO<T> {
+    private List<T> data;
     private boolean showPrevious;
     private boolean showFirstPage;
     private boolean showNext;
@@ -52,6 +52,7 @@ public class PaginationDTO {
         } else {
             showFirstPage = true;
         }
+
         // 是否展示最后一页
         if (pages.contains(totalPage)) {
             showEndPage = false;
@@ -60,3 +61,4 @@ public class PaginationDTO {
         }
     }
 }
+

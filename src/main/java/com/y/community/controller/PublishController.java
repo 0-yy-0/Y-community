@@ -1,11 +1,13 @@
 package com.y.community.controller;
 
+import com.y.community.cache.TagCache;
 import com.y.community.dto.QuestionDTO;
 import com.y.community.mapper.QuestionMapper;
 import com.y.community.mapper.UserMapper;
 import com.y.community.model.Question;
 import com.y.community.model.User;
 import com.y.community.service.QuestionService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,17 +27,19 @@ public class PublishController {
 
     // 将对应问题回显，并将更新写入数据库
     @GetMapping("/publish/{id}")
-    public String edit(@PathVariable(name = "id") Integer id,
+    public String edit(@PathVariable(name = "id") Long id,
                        Model model) {
         QuestionDTO question = questionService.getById(id);
         model.addAttribute("title", question.getTitle());
         model.addAttribute("description", question.getDescription());
         model.addAttribute("tag", question.getTag());
-        model.addAttribute("id", id);
+        model.addAttribute("id", question.getId());
+        model.addAttribute("tags", TagCache.get());
         return "publish";
     }
     @GetMapping("/publish")
-    public String publish() {
+    public String publish(Model model) {
+        model.addAttribute("tags", TagCache.get());
         return "publish";
     }
 
@@ -44,26 +48,39 @@ public class PublishController {
             @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "description", required = false) String description,
             @RequestParam(value = "tag", required = false) String tag,
-            @RequestParam(value = "id", required = false) Integer id,
+            @RequestParam(value = "id", required = false) Long id,
             HttpServletRequest request,
             Model model) {
-
+        // 回显
         model.addAttribute("title", title);
         model.addAttribute("description", description);
         model.addAttribute("tag", tag);
+        model.addAttribute("tags", TagCache.get());
 
-        if (title == null || title == "") {
+        if (StringUtils.isBlank(title)) {
             model.addAttribute("error", "标题不能为空");
-            return  "publish";
+            return "publish";
         }
-        if (description == null || description == "") {
+
+        if (StringUtils.length(title) > 50) {
+            model.addAttribute("error", "标题最多 50 个字符");
+            return "publish";
+        }
+        if (StringUtils.isBlank(description)) {
             model.addAttribute("error", "问题补充不能为空");
-            return  "publish";
+            return "publish";
         }
-        if (tag == null || tag == "") {
+        if (StringUtils.isBlank(tag)) {
             model.addAttribute("error", "标签不能为空");
-            return  "publish";
+            return "publish";
         }
+
+        String invalid = TagCache.filterInvalid(tag);
+        if (StringUtils.isNotBlank(invalid)) {
+            model.addAttribute("error", "输入非法标签:" + invalid);
+            return "publish";
+        }
+
         User user = (User) request.getSession().getAttribute("user");
         if (user == null) {
             model.addAttribute("error", "用户未登录");
@@ -79,6 +96,4 @@ public class PublishController {
         questionService.createOrUpdate(question);
         return "redirect:/";
     }
-
-
 }
